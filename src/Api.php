@@ -63,9 +63,9 @@ class Api
 
                         $this->verboseRemotes[] = Remote::fromVerboseOutput(
                             $remote,
-                            $userHost,
                             $owner,
                             $repo,
+                            $userHost,
                             $type
                         );
                     }
