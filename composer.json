@@ -1,0 +1,27 @@
+{
+    "name": "technodelight/php-git",
+    "description": "Small library to execute git commands through shell",
+    "type": "library",
+    "require": {
+        "ext-libxml": "*",
+        "technodelight/shell-exec": "^1.0"
+    },
+    "require-dev": {
+        "phpspec/phpspec": "^4.3"
+    },
+    "autoload": {
+        "psr-4": {
+            "Technodelight\\GitShell\\": "src/"
+        }
+    },
+    "config": {
+        "bin-dir": "bin/"
+    },
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Zsolt Gál",
+            "email": "zenc@zenc.hu"
+        }
+    ]
+}
