@@ -47,6 +47,10 @@ class Api
         $this->shell->exec(Command::create()->withArgument('checkout')->withArgument($branch));
     }
 
+    /**
+     * @param bool $verbose
+     * @return Remote[]
+     */
     public function remotes($verbose = false)
     {
         if ($verbose) {
@@ -64,15 +68,6 @@ class Api
                             $repo,
                             $type
                         );
-//                        if (!isset($this->verboseRemotes[$remote])) {
-//                            $this->verboseRemotes[$remote] = [];
-//                        }
-//                        $this->verboseRemotes[$remote][$type] = [
-//                            'owner' => $owner,
-//                            'repo' => $repo,
-//                            'userHost' => $userHost,
-//                            'url' => sprintf('%s:%s/%s.git', $userHost, $owner, $repo)
-//                        ];
                     }
                 }
                 if (!$this->verboseRemotes) {
