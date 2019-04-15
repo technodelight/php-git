@@ -184,7 +184,12 @@ class Api
     public function topLevelDirectory()
     {
         if (!$this->tld) {
-            $tld = $this->shell->exec(Command::create()->withArgument('rev-parse')->withOption('show-toplevel'));
+            $tld = $this->shell->exec(
+                Command::create()
+                    ->withArgument('rev-parse')
+                    ->withOption('show-toplevel')
+                    ->withStdErrToStdOut()->withStdOutTo('/dev/null')
+            );
             $this->tld = end($tld);
         }
         return $this->tld;
