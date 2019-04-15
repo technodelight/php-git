@@ -188,7 +188,7 @@ class Api
                 Command::create()
                     ->withArgument('rev-parse')
                     ->withOption('show-toplevel')
-                    ->withStdErrToStdOut()->withStdOutTo('/dev/null')
+                    ->withStdErrTo('/dev/null')
             );
             $this->tld = end($tld);
         }
