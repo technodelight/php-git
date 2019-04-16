@@ -6,20 +6,37 @@ use Technodelight\ShellExec\Command;
 use Technodelight\ShellExec\Shell;
 use Technodelight\ShellExec\ShellCommandException;
 
-class Api
+class Api implements ApiInterface
 {
     const LOG_FORMAT = '"<entry><hash><![CDATA[%H]]></hash><message><![CDATA[%B]]></message><authorName>%aN</authorName><authorDate>%at</authorDate></entry>"';
     const VERBOSE_REMOTE_REGEX = '~([a-z0-9]+)\s+([^:]+):([^/]+)/(.*).git \((fetch|push)\)~';
+    /**
+     * @var Shell
+     */
     private $shell;
+    /**
+     * @var Remote[]
+     */
     private $remotes;
+    /**
+     * @var Remote[]
+     */
     private $verboseRemotes;
-    private $tld;
+    /**
+     * @var string|null
+     */
+    private $tld = null;
 
     public function __construct(Shell $shell)
     {
         $this->shell = $shell;
     }
 
+    /**
+     * @param string $from
+     * @param string $to
+     * @return \Generator
+     */
     public function log($from, $to = 'head')
     {
         $command = Command::create()
@@ -37,11 +54,19 @@ class Api
         }
     }
 
+    /**
+     * @param string $branch
+     * @return void
+     */
     public function createBranch($branch)
     {
         $this->shell->exec(Command::create()->withArgument('checkout')->withOption('b')->withArgument($branch));
     }
 
+    /**
+     * @param string $branch
+     * @return void
+     */
     public function switchBranch($branch)
     {
         $this->shell->exec(Command::create()->withArgument('checkout')->withArgument($branch));
@@ -142,6 +167,9 @@ class Api
         );
     }
 
+    /**
+     * @return Branch|null
+     */
     public function currentBranch()
     {
         $list = $this->branches('* ');
@@ -150,6 +178,8 @@ class Api
                 return $branch;
             }
         }
+
+        return null;
     }
 
     /**
@@ -181,9 +211,12 @@ class Api
         return end($parent);
     }
 
+    /**
+     * @return string|null
+     */
     public function topLevelDirectory()
     {
-        if (!$this->tld) {
+        if (null === $this->tld) {
             $tld = $this->shell->exec(
                 Command::create()
                     ->withArgument('rev-parse')
