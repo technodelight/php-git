@@ -1,5 +1,5 @@
 # php-git
-Small library to execute git commands through shell
+Small PHP wrapper library around `git` shell.
 
 # Install
 
