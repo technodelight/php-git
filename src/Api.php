@@ -188,27 +188,31 @@ class Api implements ApiInterface
      */
     public function parentBranch()
     {
-        $parent = $this->shell->exec(
+        // git log --decorate --simplify-by-decoration | grep '^commit' | egrep -o '\([^)]+\)' | head -2 | tail -1 | sed -E "s~[\(\)]+~~g" | tr , \n | tail -1
+        $result = $this->shell->exec(
             Command::create()
-                ->withArgument('show-branch')->withOption('a')->withStdErrTo('/dev/null')
-                ->pipe(
-                    Command::create('sed')->withArgument('"s/^ *//g"')
-                )
-                ->pipe(
-                    Command::create('grep')->withOption('v')->withArgument('"^\*"')
-                )
-                ->pipe(
-                    Command::create('head')->withOption('1')
-                )
-                ->pipe(
-                    Command::create('sed')->withArgument('"s/.*\[\(.*\)\].*/\1/"')
-                )
-                ->pipe(
-                    Command::create('sed')->withArgument('"s/[\^~].*//"')
-                )
+                ->withArgument('log')
+                ->withOption('decorate')
+                ->withOption('simplify-by-decoration')
+            ->pipe(
+                Command::create('grep')->withArgument("'^commit'")
+            )
+            ->pipe(
+                Command::create('egrep')->withShortOption('o')->withArgument("'\([^)]+\)'")
+            )
+            ->pipe(
+                Command::create('head')->withShortOption('2')
+            )
+            ->pipe(
+                Command::create('tail')->withShortOption('1')
+            )
+            ->pipe(
+                Command::create('sed')->withArgument("'s~[\(\)]+~~g'")
+            )
         );
+        $parents = array_map('trim', explode(',', array_shift($result)));
 
-        return end($parent);
+        return end($parents);
     }
 
     /**
